@@ -28,7 +28,20 @@ router.post("/notes", (req, res) =>{
 
 router.delete("/notes/:id", (req, res) => {
     console.log(req.params.id);
-    // res.send
-})
+    fs.readFile("./db/db.json", function (err, data) {
+        var notes = JSON.parse(data);
+        for (let i = 0; i < notes.length ; i++){
+            if (notes[i].id == req.params.id) {
+                notes.splice(i, 1);
+                break
+            }    
+        }
+        fs.writeFile("./db/db.json", JSON.stringify(notes), function (err) {
+            if (err) throw err;
+            return true;
+        })
+        res.json(notes);
+    })
+});
 
 module.exports = router;
